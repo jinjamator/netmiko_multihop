@@ -59,7 +59,9 @@ Usage
     }
 
     # If the next hop is reachable via vrf on the current hop, add the vrf parameter to the destination configuration.
-    # Eg.: Target1 is reachable via vrf mgmt from target2. You want to jump from target1 to target2. Add the parameter vrf to target2 before you jump from target1 to target2.
+    # Eg.: Target1 is reachable via vrf mgmt from target2. 
+    #      You want to jump from target1 to target2. 
+    #      Add the parameter vrf='mgmt' to target2 configuration before you jump from target1 to target2.
 
     ssh = ConnectHandler(**jumphost1)
     # now we are on jumphost1
