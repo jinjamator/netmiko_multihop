@@ -4,9 +4,11 @@ Introduction
 
 netmiko_multihop is an out of tree netmiko monkeypatch which adds multihop capability. 
 Currently following platforms are supported as intermediate hop:
+
     - linux
     - cisco_nxos
     - cisco_ios
+
 Other platforms can be added easily if required.
 
 
