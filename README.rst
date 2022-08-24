@@ -55,12 +55,16 @@ Usage
 
     ssh = ConnectHandler(**jumphost1)
     # now we are on jumphost1
-    ssh.jump_to(jumphost2).jump_to(target1)
+    # this is where the magic starts. as jump_to returns the object instance we can jump multiple hops at once
+
+    ssh.jump_to(**jumphost2).jump_to(**target1)
     # now we are on target1
     print(ssh.send_command("show inventory"))
+    # lets get back a single jump 
     ssh.jump_back()
     # now we are on jumphost2
-    ssh.jump_to(target2)
+    ssh.jump_to(**target2)
+    # now we are on target2
     print(ssh.send_command("show inventory"))
 
 
