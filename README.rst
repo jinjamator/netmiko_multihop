@@ -2,7 +2,8 @@ Introduction
 ==================
 
 
-netmiko_multihop is an out of tree netmiko monkeypatch which adds multihop capability.
+netmiko_multihop is an out of tree netmiko monkeypatch which adds multihop capability. 
+Currently just linux is supported as intermediate hop, but other platforms can be added easily if required.
 
 
 Installation
