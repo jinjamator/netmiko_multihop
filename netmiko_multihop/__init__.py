@@ -11,7 +11,7 @@ platforms = {
         "ssh_password_pattern": "[pP]assword:",
         "ssh_accept_host_pattern": "yes/no",
         "ssh_accept_host_command": "yes",
-        "ssh_verbose_option": "-vvv",
+        "ssh_verbose_option": "",
         "ssh_disconnect_sequence": "~.\n",
         "optional_parameters": "",
     },
