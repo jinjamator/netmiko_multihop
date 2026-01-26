@@ -162,6 +162,8 @@ def jump_to(self, **kwargs):
     except KeyError:
         target_device_type  = "linux"
 
+    self.secret=kwargs.get("secret")
+
     if not hasattr(self, "__jump_device_list"):
         self.__jump_device_list = []
 
@@ -178,8 +180,11 @@ def jump_to(self, **kwargs):
     )
     netmiko.redispatch(self, target_device_type)
     self.find_prompt()
-
-
+    
+    if self.secret:
+        self.enable()
+    self.find_prompt()
+    
     log.debug(
         f"successfully jumped to {target_device_type} {target_username}@{target_ip}"
     )
