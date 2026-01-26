@@ -86,14 +86,14 @@ def jump_telnet(**kwargs):
             telnet_cmd_str + "\r", f"({telnet_username_pattern})" , normalize=False
         )
     except Exception:
-        raise netmiko.ConfigInvalidException(f"Cannot jump to {kwargs.get("target_ip")}. Username pattern not found.")
+        raise netmiko.ConfigInvalidException(f"Cannot jump to {kwargs.get('target_ip')}. Username pattern not found.")
     
     try:
         result = _self.send_command(
             kwargs["target_username"] + "\r", f"({telnet_password_pattern})" , normalize=False
         )
     except Exception:
-        raise netmiko.ConfigInvalidException(f"Cannot jump to {kwargs.get("target_ip")}. Password pattern not found.")
+        raise netmiko.ConfigInvalidException(f"Cannot jump to {kwargs.get('target_ip')}. Password pattern not found.")
 
     _self.write_channel(kwargs["target_password"] + "\n")
 
@@ -121,10 +121,10 @@ def jump_ssh(**kwargs):
 
     try:
         result = _self.send_command(
-            ssh_cmd_str, f"({ssh_password_pattern})|({ssh_accept_host_pattern})"
+            ssh_cmd_str, f"({ssh_password_pattern})|({ssh_accept_host_pattern})",
         )
     except Exception:
-        raise netmiko.ConfigInvalidException(f"Cannot jump to {target_ip}.")
+        raise netmiko.ConfigInvalidException(f"Cannot jump to {kwargs.get("target_ip")}.")
 
     if ssh_accept_host_pattern in result:
         _self.send_command(ssh_accept_host_command, ssh_password_pattern)
@@ -136,8 +136,6 @@ def jump_ssh(**kwargs):
 
 
 def jump_to(self, **kwargs):
-    from pprint import pprint
-    pprint(kwargs)
        
     try:
         target_ip = kwargs["ip"]
