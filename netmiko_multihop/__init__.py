@@ -94,13 +94,17 @@ def jump_telnet(**kwargs):
         )
     except Exception:
         raise netmiko.ConfigInvalidException(f"Cannot jump to {kwargs.get('target_ip')}. Username pattern not found.")
-    
+    finally:
+        self.cleanup()
+
     try:
         result = _self.send_command(
             kwargs["target_username"] + "\r", f"({telnet_password_pattern})" , normalize=False
         )
     except Exception:
         raise netmiko.ConfigInvalidException(f"Cannot jump to {kwargs.get('target_ip')}. Password pattern not found.")
+    finally:
+        self.cleanup()
 
     _self.write_channel(kwargs["target_password"] + "\n")
 
@@ -132,6 +136,8 @@ def jump_ssh(**kwargs):
         )
     except Exception:
         raise netmiko.ConfigInvalidException(f"Cannot jump to {kwargs.get('target_ip')}.")
+    finally:
+        self.cleanup()
 
     if ssh_accept_host_pattern in result:
         _self.send_command(ssh_accept_host_command, ssh_password_pattern)
@@ -148,14 +154,21 @@ def jump_to(self, **kwargs):
         target_ip = kwargs["ip"]
     except KeyError:
         raise netmiko.ConfigInvalidException("Jump target IP must be set")
+    finally:
+        self.cleanup()
+
     try:
         target_username = kwargs["username"]
     except KeyError:
         raise netmiko.ConfigInvalidException("Jump target username must be set")
+    finally:
+        self.cleanup()
     try:
         target_password  = kwargs["password"]
     except KeyError:
         raise netmiko.ConfigInvalidException("Jump target password must be set")
+    finally:
+        self.cleanup()    
     try:
         if "telnet" in kwargs["device_type"]:
             target_port  = 23
@@ -177,10 +190,16 @@ def jump_to(self, **kwargs):
     no_log = {"password": target_password}
     log.addFilter(netmiko.base_connection.SecretsFilter(no_log=no_log))
 
-    if "telnet" in kwargs["device_type"]:
-        jump_telnet(**{**locals(),**kwargs})
-    else:
-        jump_ssh(**{**locals(),**kwargs})
+    try:
+        if "telnet" in kwargs["device_type"]:
+            jump_telnet(**{**locals(),**kwargs})
+        else:
+            jump_ssh(**{**locals(),**kwargs})
+    except Exception as e:
+        log.error(e)
+    finally:
+        self.cleanup()
+        return self
 
     self.__jump_device_list.append(
         {"ip": self.host, "device_type": self.device_type, "username": self.username}
