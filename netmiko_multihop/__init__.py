@@ -16,7 +16,8 @@ platforms = {
         "ssh_accept_host_pattern": "yes/no",
         "ssh_accept_host_command": "yes",
         "ssh_verbose_option": "",
-        "ssh_disconnect_sequence": "~.\n",
+        "ssh_disconnect_sequence": "\n~.\n",
+        "telnet_disconnect_sequence": "\x1b\rquit\r\n",
         "optional_parameters": "",
     },
     "cisco_nxos": {
@@ -26,7 +27,7 @@ platforms = {
         "ssh_accept_host_pattern": "yes/no",
         "ssh_accept_host_command": "yes",
         "ssh_verbose_option": None,
-        "ssh_disconnect_sequence": "~.\n",
+        "ssh_disconnect_sequence": "\n~.\n",
         "vrf_prefix": "vrf ",
         "optional_parameters": "",
         "vrf_str": "",
@@ -38,7 +39,7 @@ platforms = {
         "ssh_accept_host_pattern": "yes/no",
         "ssh_accept_host_command": "yes",
         "ssh_verbose_option": None,
-        "ssh_disconnect_sequence": "~.\n",
+        "ssh_disconnect_sequence": "\n~.\n",
         "vrf_prefix": "-vrf ",
         "optional_parameters": "",
         "vrf_str": "",
@@ -54,9 +55,15 @@ def jump_back(self):
     except IndexError:
         raise Exception("No previous host to jump back to")
 
-    self.write_channel(
-        platforms.get(self.device_type, platforms["linux"])["ssh_disconnect_sequence"]
-    )
+    if "telnet" in self.device_type:
+
+        self.write_channel(
+            platforms.get(self.device_type, platforms["linux"])["telnet_disconnect_sequence"]
+        )    
+    else:
+        self.write_channel(
+            platforms.get(self.device_type, platforms["linux"])["ssh_disconnect_sequence"]
+        )    
     netmiko.redispatch(self, prev_platform["device_type"])
     self.find_prompt()
     log.debug(
